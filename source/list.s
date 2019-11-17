@@ -2,6 +2,7 @@
 		.global link_tail
 		.global fill_node
 		.global link_node
+		.global edit_node
 		.global print_list
 		.global remove_node
 		.global clear_list
@@ -52,6 +53,27 @@ link_node:
 		pop {r4-r8,r10,r11,lr}
 		bx lr
 @--------------------------------------@
+
+@--- Edit a node with the given index ---@ @INPUT: R1=Address of head node, R2=Address of a data, R3=index of node
+edit_node:
+		mov r8, r1
+		push {r4-r8,r10,r11,lr}		
+		ldr r4, [r1]
+edit_loop:
+		cmp r3, #0
+		beq edit_done
+		add r4, #4
+		ldr r4, [r4]
+		sub r3, #1
+		b edit_loop
+edit_done:
+		mov r1, r4
+		bl fill_node
+		pop {r4-r8,r10,r11,lr}
+		mov r1, r8
+		bx lr
+
+@----------------------------------------@
 
 @--- Prints the list to the console ---@ @INPUT:R1=Address of head node
 print_list:
