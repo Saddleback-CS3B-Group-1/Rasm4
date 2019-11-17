@@ -43,12 +43,18 @@ loop:
 		bl fill_node
 		mov r2, r1
 		ldr r1, =ptr_head
-		ldr r1, [r1]
 		bl link_tail
 		sub r10, #1
 		b loop
 		
 loop_done:
+		ldr r1, =ptr_head
+		bl print_list
+
+		ldr r1, =ptr_head
+		mov r2, #0
+		bl remove_node
+
 		ldr r1, =ptr_head
 		bl print_list
 

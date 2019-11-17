@@ -20,7 +20,7 @@ build_node:
 link_tail:
 		mov r8, r1
 		push {r4-r8,r10,r11,lr}
-		mov r4, r1
+		ldr r4, [r1]
 tail_loop:
 		cmp r4, #0
 		beq tail_end
@@ -75,14 +75,28 @@ print_end:
 remove_node:
 		mov r8, r1
 		push {r4-r8,r10,r11,lr}
-		mov r4, r1
+		mov r3, #0
+		ldr r4, [r1]
 remove_loop:
 		cmp r2, #0
-		beq remove_end
+		beq remove_consider
 		mov r1, r4
 		add r4, #4
 		ldr r4, [r4]
 		b tail_loop
+remove_consider:
+		cmp r3, #0
+		beq remove_head
+		b remove_other
+remove_head:
+		ldr r0, [r4]
+		bl free
+		mov r0, r4
+		add r4, #4
+		ldr r5, [r4]
+		bl free
+		str r5, [r8]
+remove_other:
 remove_end:
 		pop {r4-r8,r10,r11,lr}
 		mov r1, r8
@@ -99,8 +113,11 @@ clear_list:
 clear_loop:
 		cmp r1, #0
 		beq clear_end
+		mov r5, r1
 		ldr r0, [r1], #4
 		ldr r4, [r1]
+		bl free
+		mov r0, r5
 		bl free
 		mov r1, r4
 		b clear_loop
