@@ -52,7 +52,7 @@ loop_done:
 		bl print_list
 
 		ldr r1, =ptr_head
-		mov r2, #0
+		mov r2, #1
 		bl remove_node
 
 		ldr r1, =ptr_head

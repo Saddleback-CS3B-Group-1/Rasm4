@@ -80,13 +80,19 @@ remove_node:
 remove_loop:
 		cmp r2, #0
 		beq remove_consider
-		mov r1, r4
+		mov r3, r4
 		add r4, #4
 		ldr r4, [r4]
-		b tail_loop
+		sub r2, #1
+		b remove_loop
 remove_consider:
 		cmp r3, #0
 		beq remove_head
+		mov r5, r4
+		add r5, #4
+		ldr r5, [r5]
+		cmp r5, #0
+		beq remove_tail
 		b remove_other
 remove_head:
 		ldr r0, [r4]
@@ -96,7 +102,23 @@ remove_head:
 		ldr r5, [r4]
 		bl free
 		str r5, [r8]
+		b remove_end
+remove_tail:
+		add r3, #4
+		mov r0, #0
+		str r0, [r3]
+		ldr r0, [r4]
+		bl free
+		mov r0, r4
+		bl free
+		b remove_end
 remove_other:
+		add r3, #4
+		str r5, [r3]
+		ldr r0, [r4]
+		bl free
+		mov r0, r4
+		bl free
 remove_end:
 		pop {r4-r8,r10,r11,lr}
 		mov r1, r8
