@@ -51,18 +51,9 @@ loop_done:
 		ldr r1, =ptr_head
 		bl print_list
 		
-		ldr r1, =prompt_input
-		bl putstring
-		ldr r1, =input_buffer
-		mov r2, #1024
-		bl getstring
-		mov r0, r1
-		bl String_copy
-		mov r2, r0
-
 		ldr r1, =ptr_head
-		mov r3, #2
-		bl edit_node
+		mov r2, #1
+		bl remove_node
 
 		ldr r1, =ptr_head
 		bl print_list

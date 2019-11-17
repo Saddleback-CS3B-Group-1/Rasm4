@@ -115,7 +115,7 @@ remove_consider:
 		ldr r5, [r5]
 		cmp r5, #0
 		beq remove_tail
-		b remove_other
+		b remove_middle
 remove_head:
 		ldr r0, [r4]
 		bl free
@@ -134,9 +134,10 @@ remove_tail:
 		mov r0, r4
 		bl free
 		b remove_end
-remove_other:
-		add r3, #4
-		str r5, [r3]
+remove_middle:
+		mov r1, r3
+		mov r2, r5
+		bl link_node
 		ldr r0, [r4]
 		bl free
 		mov r0, r4
