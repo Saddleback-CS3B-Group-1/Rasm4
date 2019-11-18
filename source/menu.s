@@ -17,7 +17,7 @@ option5: 		.asciz 	"<5> String search. Regardless of case, return all strings th
 option6:		.asciz 	"<6> Save File (output.txt)"
 option7:		.asciz  "<7> Quit"
 invalidMsg:		.asciz  "ERROR: Invalid Input!"
-inputBuffer:	.word 	BUFFSIZE
+inputBuffer:	.word 	SIZE
 
 	.text
 
@@ -47,13 +47,13 @@ menu:
 	ldr	R1,=option7
 	bl	putstring
 
-	ldr	R1,=inputBuffer		@ Load input buffer into R1
+	ldr	R1,=inputBuffer			@ Load input buffer into R1
 	mov	R2,#SIZE			@ Load input buffer size into R2
 	bl	getstring			@ Getstring input
 	cmp	R0,#2				@ Check if user input size is valid
-	bgt	invalidInput		@ If user input is invalidInput, branch to invalidInput
-	ldr	R1, =inputBuffer	@ Load input buffer into R1
-	ldrb R1,[R1]			@ Load first byte of user input
+	bgt	invalidInput			@ If user input is invalidInput, branch to invalidInput
+	ldr	R1, =inputBuffer		@ Load input buffer into R1
+	ldrb R1,[R1]				@ Load first byte of user input
 	cmp	R1,#'1'				@ If input is 0 or negative, branch to invalidInput input
 	blt	invalidInput			
 	cmp	R1,#'7'				@ If input is greater than 7, branch to invalidInput
@@ -62,20 +62,20 @@ menu:
 	bne	endMenu				@ If not equal to 2 branch to endMenu
 
 	mov	R0,#1				@ If user inputs a 2, there is options for adding a string
-	ldr	R1,=option2a		@ either add string  manually or read from file
+	ldr	R1,=option2a			@ either add string  manually or read from file
 	bl	putstring
 	ldr	R1,=option2b
 	bl	putstring
 
 	@Check to make sure this subselection is given a valid input
 	
-	ldr	R1,=inputBuffer		@ Load input buffer into R1
+	ldr	R1,=inputBuffer			@ Load input buffer into R1
 	mov	R2,#SIZE			@ Load input buffer size into R2
 	bl	getstring			@ Getstring input
 	cmp	R0,#2				@ Check if user input size is valid
-	bgt	invalidInput		@ If user input is not valid branch to invalidInput
-	ldr	R1,=inputBuffer		@ Load input buffer into R1
-	ldrb R1,[R1]			@ Load first byte of user input
+	bgt	invalidInput			@ If user input is not valid branch to invalidInput
+	ldr	R1,=inputBuffer			@ Load input buffer into R1
+	ldrb R1,[R1]				@ Load first byte of user input
 	cmp	R1,#'a'				@ Check if user input 'a'
 	beq	endMenu				@ If input is valid branch to endMenu
 	cmp	R1,#'A'				@ Check if user input 'A'
@@ -87,11 +87,11 @@ menu:
 	
 invalidInput:	
 	mov	R0,#1				@ Set output to stdout
-	ldr	R1, =invalidMsg		@ Load invalid input message into R1
+	ldr	R1, =invalidMsg			@ Load invalid input message into R1
 	bl	putstring			@ Output invalid input message
 	b	menu				@ Branch to menu
 
 endMenu:
-	mov	R0,R1					@ Move user input into R0
-	pop	{R4-R8, R10, R11, LR}	@ Restore AAPCS Required registers
-	bx	LR						@ Return to calling program
+	mov	R0,R1				@ Move user input into R0
+	pop	{R4-R8, R10, R11, LR}		@ Restore AAPCS Required registers
+	bx	LR				@ Return to calling program
