@@ -2,6 +2,7 @@
 		.global link_tail
 		.global fill_node
 		.global link_node
+		.global data_at
 		.global edit_node
 		.global print_list
 		.global remove_node
@@ -53,6 +54,25 @@ link_node:
 		pop {r4-r8,r10,r11,lr}
 		bx lr
 @--------------------------------------@
+
+@--- Returns the data address of a requested node ---@ @INPUT:R1=Address of the head node, R2=index of node
+data_at:                                               @OUTPUT: R0=address of node's data
+		push {r4-r8,r10,r11,lr}
+		ldr r4, [r1]
+at_loop:
+		cmp r2, #0
+		beq at_done
+		add r4, #4
+		ldr r4, [r4]
+		sub r2, #1
+		b at_loop
+at_done:
+		mov r0, r4
+		pop {r4-r8,r10,r11,lr}
+		bx lr
+@---------------------------------------@
+		
+@----------------------------------------------------@
 
 @--- Edit a node with the given index ---@ @INPUT: R1=Address of head node, R2=Address of a data, R3=index of node
 edit_node:

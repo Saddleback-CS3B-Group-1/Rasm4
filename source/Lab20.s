@@ -53,7 +53,12 @@ loop_done:
 		
 		ldr r1, =ptr_head
 		mov r2, #1
-		bl remove_node
+		bl data_at
+
+		ldr r1, [r0]
+		bl putstring
+		ldr r1, =char_nL
+		bl putch
 
 		ldr r1, =ptr_head
 		bl print_list
