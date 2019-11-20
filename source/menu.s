@@ -16,6 +16,7 @@ option4:		.asciz 	"<4> Edit string. Given an index #, replace old string w/ new 
 option5: 		.asciz 	"<5> String search. Regardless of case, return all strings that match the substring given."
 option6:		.asciz 	"<6> Save File (output.txt)"
 option7:		.asciz  "<7> Quit"
+enterPrompt: 		.asciz 	"Enter selection: "
 invalidMsg:		.asciz  "ERROR: Invalid Input!"
 inputBuffer:	.word 	SIZE
 
@@ -46,6 +47,9 @@ menu:
 	
 	ldr	R1,=option7
 	bl	putstring
+	
+	ldr r1, =enterPrompt
+	bl putstring
 
 	ldr	R1,=inputBuffer			@ Load input buffer into R1
 	mov	R2,#SIZE			@ Load input buffer size into R2
