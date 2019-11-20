@@ -54,7 +54,7 @@ start:
 	bl putstring
 
 	cmp r0, #'1'			@If the user input is 1, then branch to print_list
-	beq print_list			@Output link list
+	beq printListOption			@Output link list
 	
 	cmp r0, #'a'
 	beq addStringOption
@@ -80,6 +80,19 @@ start:
 	
 	cmp	R0,#'7'	
 	beq	endProgramOption
+	
+printListOption:
+	ldr r1, =head_ptr
+	ldr r1, [r1]
+	cmp r1, #0
+	beq emptyList
+	bl print_list
+	b start
+	
+emptyList:
+	ldr r1, =emptyList
+	bl putstring
+	b start
 
 addStringOption:
 	ldr r1, =enterStringP
