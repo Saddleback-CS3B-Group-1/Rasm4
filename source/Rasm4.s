@@ -90,19 +90,33 @@ addStringOption:
 	ldr r1, =inputBuffer
 	bl StringCopy
 	mov r4, r0
+	mov r1, r0
+	bl String_length
+	add r0, #9			@add 1 to string length for null byte
+	ldr r1, =byteCount		@Load byteCount variable
+	ldr r3, [r1]			@load byteCount value
+	add r3, r0			@sum the total byte count
+	str r3, [r1]			@store the new byte count, which will increment bytes displayed on screen
 	bl build_node			@build new node with string
-	ldr r1, =head_ptr		@load head ptr into r1
-	ldr r2, [r1]				@dereference head ptr
-	cmp r2, #0			@if head is null
-	streq r4, [r1]			@set head as newNode
-	ldr r1, =tail_ptr			@load tail ptr into r1
-	bl link_tail			@adding the new node and putting it at the tail of link list
-	bl stringLength		@get the length of string
-	add r0, #8			@add 8 bytes to byte counter for each node
-	ldr r1, =byteCount		@byteCount
-	ldr r2, [r1]				@load byteCount value into r2
-	add r2, r0				@sum total byteCount
-	str r2, [r1]				@store new byteCount, which will increment bytes displayed on the screen
+	mov r1, r0
+	mov r2, r4			@preverse new string
+	bl fill_node			@stick data address into node
+	mov r4, r1
+	ldr r1, =head_ptr
+	ldr r1, [r1]
+	cmp r1, #0
+	@call link node func 
+addHead:
+	mov r1, r4
+	mov r2, #0
+	bl link_node 
+	ldr r1, =head_ptr
+	str r4, [r1]
+	b start
+addTail:
+	ldr r1, =head_ptr
+	mov r2, r4
+	bl link_tail
 	b start				@branch back to start function
 
 fileStringsOption:
