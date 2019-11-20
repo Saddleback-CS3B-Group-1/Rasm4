@@ -87,7 +87,7 @@ addStringOption:
 	ldr r1, =inputBuffer
 	mov r2, #SIZE
 	bl getstring
-	ldr r0, =inputBuffer
+	ldr r1, =inputBuffer
 	bl StringCopy
 	mov r4, r0
 	bl build_node			@build new node with string
