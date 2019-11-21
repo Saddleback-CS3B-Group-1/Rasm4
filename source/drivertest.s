@@ -44,15 +44,12 @@ start:
 	ldr r1, =bytes			@Output "bytes"
 	bl putstring
 
-	ldr r0, =numNodesP	@Output "Number of Nodes: "
-	ldr r0, [r0]
-	ldr r1, =node_string
-	bl intasc32
-	bl putstring
-	
+	ldr r1, =numNodesP	@Output "Number of Nodes: "
 	bl putstring
 
-	ldr r1, =nodeCount		@Output number of nodes to the screen
+	ldr r0, =nodeCount		@Output number of nodes to the screen
+	ldr r0, [r0]
+	ldr r1, =node_string
 	bl intasc32
 	bl putstring
 
