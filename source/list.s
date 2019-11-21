@@ -5,6 +5,7 @@
 		.global data_at
 		.global edit_node
 		.global print_list
+		.global write_list
 		.global remove_node
 		.global clear_list
 		.extern malloc
@@ -112,6 +113,29 @@ print_end:
 		mov r1, r8
 		bx lr
 @-----------------------------@
+
+@--- Write the list to a file ---@ @INPUT:R1=Address of head node, R2=file handle for output
+write_list:
+		mov r8, r1
+		push {r4-r8,r10,r11,lr}
+		ldr r4, [r1]
+		mov r7, #4
+		mov r3, r2
+write_loop:
+		cmp r4, #0
+		beq write_done
+		ldr r1, [r4], #4
+		bl String_length
+		mov r2, r0
+		mov r0, r3
+		svc 0
+		ldr r4, [r4]
+		b write_loop
+write_done:
+		pop {r4-r8,r10,r11,lr}
+		mov r1, r8
+		bx lr
+@--------------------------------@
 
 @--- Removes a node from a given list ---@ @INPUT: R1=Address of head node, R2=index of node to remove
 remove_node:

@@ -1,7 +1,8 @@
 		.data
      filename: .asciz "input.txt"
+	  fileOut: .asciz "output.txt"
   file_handle: .word 0
- input_buffer: .skip 1025  @1024 sized buffer with extra byte for null terminator
+ input_buffer: .skip 1025
      head_ptr: .word 0
 remainder_ptr: .word 0
    byte_count: .word 0
@@ -133,6 +134,23 @@ done:
 		mov r7, #6
 		svc 0
 
+		ldr r0, =fileOut
+		mov r1, #0101
+		ldr r2, =0666
+		mov r7, #5
+		svc 0
+		ldr r1, =file_handle
+		str r0, [r1]  @preserve the file handle
+
+		mov r2, r0
+		ldr r1, =head_ptr
+		bl write_list
+
+		ldr r0, =file_handle
+		ldr r0, [r0]
+		mov r7, #6
+		svc 0
+		
 		ldr r1, =head_ptr
 		bl print_list
 		ldr r1, =char_nL
