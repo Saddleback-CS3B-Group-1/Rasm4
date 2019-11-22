@@ -205,9 +205,13 @@ clear_loop:
 		mov r5, r1
 		ldr r0, [r1], #4
 		ldr r4, [r1]
+		push {r0-r12}
 		bl free
+		pop {r0-r12}
 		mov r0, r5
+		push {r0-r12}
 		bl free
+		pop {r0-r12}
 		mov r1, r4
 		b clear_loop
 clear_end:

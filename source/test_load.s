@@ -86,6 +86,10 @@ inner_loop:
 		ldr r1, [r1]
 		cmp r1, #0          @check if head is empty
 		beq empty_head
+		mov r1, r2
+		mov r2, #0
+		bl link_node
+		mov r2, r1
 		ldr r1, =head_ptr
 		bl link_tail
 		b inner_loop
@@ -107,7 +111,13 @@ remainder_include:
 		bl String_concat
 		mov r5, r0
 		mov r0, r2
+		push {r0-r12}
 		bl free
+		pop {r0-r12}
+		mov r0, r1
+		push {r0-r12}
+		bl free
+		pop {r0-r12}
 		mov r0, r5
 		mov r2, #0
 		ldr r3, =remainder_ptr
