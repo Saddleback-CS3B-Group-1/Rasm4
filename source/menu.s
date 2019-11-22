@@ -99,3 +99,4 @@ endMenu:
 	mov	R0,R1				@ Move user input into R0
 	pop	{R4-R8, R10, R11, LR}		@ Restore AAPCS Required registers
 	bx	LR				@ Return to calling program
+	.end

@@ -1,6 +1,4 @@
 @Driver for RASM4 
-	.global _start
-	.equ	SIZE, 1024 
 	.data
 byteCount: 		.word 0
 byte_string:		.skip 12
@@ -25,10 +23,12 @@ endl:			.asciz	"\n"
 inputBuffer:		.word 	SIZE
 
 	.text
+	.global _start
+	.equ	SIZE, 1024 
 	.extern malloc
 	.extern free
 
-start:
+_start:
 
 	mov r0, #1
 	ldr r1, =rasmTitle		@Output title 
@@ -140,7 +140,7 @@ editStringOption:
 	ldr r3, [r3]
 	bl edit_node
 	
-	b start
+	b _start
 	
 invalidRange:
 	ldr r1, =InvalidInP @output invalid range
@@ -160,12 +160,12 @@ printListOption:
 	beq listEmpty
 	ldr r1, =head_ptr
 	bl print_list
-	b start
+	b _start
 	
 listEmpty:
 	ldr r1, =emptyList
 	bl putstring
-	b start
+	b _start
 
 addStringOption:
 	mov	R0, #1		@ Set output to stdout
@@ -213,7 +213,7 @@ addHead:
 	bl link_node 
 	ldr r1, =head_ptr
 	str r4, [r1]
-	b start
+	b _start
 addTail:
 	mov r1, r4
 	mov r2, #0
@@ -221,7 +221,7 @@ addTail:
 	ldr r1, =head_ptr
 	mov r2, r4
 	bl link_tail
-	b start				@branch back to start function
+	b _start				@branch back to start function
 
 /****
 fileStringsOption:
@@ -232,7 +232,7 @@ fileStringsOption:
 	ldr r3, [r1]				@load byteCount value
 	add r3, r0				@sum the total byte count
 	str r3, [r1]				@store the new byte count, which will increment bytes displayed on screen
-	b start				@branch back to start function
+	b _start				@branch back to start function
 ****/
 
 endProgramOption:
