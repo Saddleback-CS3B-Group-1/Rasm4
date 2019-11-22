@@ -1,24 +1,24 @@
 @ Menu options function is used also to validate input 
 @ Layered with subselection for adding strings
 	
-	.global _menu
+	.global menu
 	.equ	SIZE, 1024 
 	.data
 
-option1:	.asciz	"<1> View all strings"
+option1:	.asciz	"<1> View all strings\n"
 
-option2:	.asciz	"<2> Add string"
-option2a:	.asciz	"<a> from Keyboard"
-option2b:	.asciz 	"<b> from File. Static file named input.txt"
+option2:	.asciz	"<2> Add string\n"
+option2a:	.asciz	"<a> from Keyboard\n"
+option2b:	.asciz 	"<b> from File. Static file named input.txt\n"
 
-option3:		.asciz	"<3> Delete string. Given an index #, delete the entire string and de-allocate memory (including the node)."
-option4:		.asciz 	"<4> Edit string. Given an index #, replace old string w/ new string. Allocate/De-allocate as needed."
-option5: 		.asciz 	"<5> String search. Regardless of case, return all strings that match the substring given."
-option6:		.asciz 	"<6> Save File (output.txt)"
-option7:		.asciz  "<7> Quit"
+option3:		.asciz	"<3> Delete string. Given an index #, delete the entire string and de-allocate memory (including the node).\n"
+option4:		.asciz 	"<4> Edit string. Given an index #, replace old string w/ new string. Allocate/De-allocate as needed.\n"
+option5: 		.asciz 	"<5> String search. Regardless of case, return all strings that match the substring given.\n"
+option6:		.asciz 	"<6> Save File (output.txt)\n"
+option7:		.asciz  "<7> Quit\n"
 enterPrompt: 		.asciz 	"Enter selection: "
-invalidMsg:		.asciz  "ERROR: Invalid Input!"
-inputBuffer:	.word 	SIZE
+invalidMsg:		.asciz  "ERROR: Invalid Input!\n"
+inputBuffer:	.skip 	SIZE
 
 	.text
 
@@ -47,7 +47,7 @@ menu:
 	
 	ldr	R1,=option7
 	bl	putstring
-	
+
 	ldr r1, =enterPrompt
 	bl putstring
 

@@ -7,6 +7,7 @@ byte_string:		.skip 12
 nodeCount: 		.word 0
 node_string:		.skip 12
 head_ptr:		.word 0
+char_nL:		.byte 10
 tail_ptr:		.word 0
 index:		.word 0
 outFile: 		.asciz 	"output.txt"
@@ -90,10 +91,10 @@ start:
 
 editStringOption:
 
-	ldr r1, =head_ptr
-	ldr r1, [r1]
-	cmp r1, #0
-	beq listEmpty
+	@ldr r1, =head_ptr
+	@ldr r1, [r1]
+	@cmp r1, #0
+	@beq listEmpty
 	
 	ldr r1, =enterIndexPrompt
 	bl putstring
@@ -101,17 +102,16 @@ editStringOption:
 	mov r2, #SIZE
 	bl getstring
 	ldr r1, =inputBuffer
-	ldr r1, =index
-	bl intasc32
-	bcs invalidInput
-	bvs invalidRange
+	bl ascint32
+	@bcs invalidInput
+	@bvs invalidRange
 	ldr r1, =index
 	
-	ldr r1,[r1]
+	str r0, [r1]
 	cmp r1, #0
 	blt invalidRange
 	ldr r1, =head_ptr 	@load head_ptr into r1
-	mov r3, r1  		@index of node
+	mov r2, r0  		@index of node
 	bl data_at 			@call data_at to get address of desired node data
 	cmp r0, #0			@if null was returned, then output that desired index is invalid
 	beq invalidRange
@@ -136,8 +136,8 @@ editStringOption:
 	str r6, [r1]		@store the new byte count, which will increment bytes displayed on screen
 	
 	ldr r1, =head_ptr
-	ldr r1, [r1]
-	
+	ldr r3, =index
+	ldr r3, [r3]
 	bl edit_node
 	
 	b start
@@ -158,6 +158,7 @@ printListOption:
 	ldr r1, [r1]
 	cmp r1, #0
 	beq listEmpty
+	ldr r1, =head_ptr
 	bl print_list
 	b start
 	
@@ -175,23 +176,37 @@ addStringOption:
 	bl getstring
 	ldr r1, =inputBuffer
 	bl String_copy
-	mov r4, r0
+	mov r1, r0
+	ldr r2, =char_nL
+	@ldrb r2, [r2]			@original string and string as the newline character
+	bl String_concat		@branch link to string concat
+	mov r5, r0
+	mov r0, r1
+	push {r0-r12}
+	bl free
+	pop {r0-r12}
+	mov r0, r5
 	mov r1, r0
 	bl String_length
 	add r0, #9			@add 1 to string length for null byte
+	ldr r1, =nodeCount
+	ldr r6, [r1]
+	add r6, #1
+	str r6, [r1]
 	ldr r1, =byteCount		@Load byteCount variable
 	ldr r3, [r1]			@load byteCount value
 	add r3, r0			@sum the total byte count
 	str r3, [r1]			@store the new byte count, which will increment bytes displayed on screen
 	bl build_node			@build new node with string
 	mov r1, r0
-	mov r2, r4			@preverse new string
+	mov r2, r5			@preverse new string
 	bl fill_node			@stick data address into node
 	mov r4, r1
 	ldr r1, =head_ptr
 	ldr r1, [r1]
 	cmp r1, #0
 	@call link node func 
+	bne addTail
 addHead:
 	mov r1, r4
 	mov r2, #0
@@ -200,6 +215,9 @@ addHead:
 	str r4, [r1]
 	b start
 addTail:
+	mov r1, r4
+	mov r2, #0
+	bl link_node
 	ldr r1, =head_ptr
 	mov r2, r4
 	bl link_tail
