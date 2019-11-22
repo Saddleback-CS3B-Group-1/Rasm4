@@ -127,7 +127,17 @@ editStringOption:
 	bl getstring
 	ldr r1, =inputBuffer
 	bl String_copy
-	mov r2, r0 			@String address is in r2
+	mov r1, r0
+	ldr r2, =char_nL
+	bl String_concat		@branch link to string concat
+	mov r5, r0
+	mov r0, r1
+	push {r0-r12}
+	bl free
+	pop {r0-r12}
+	mov r0, r5
+	mov r2, r0 			@String address is in r1
+	mov r1, r0
 	bl String_length	@get string length of new string
 	sub r0, r5 			@subtract old string length from new string
 	ldr r1, =byteCount	@Load byteCount variable
@@ -178,7 +188,6 @@ addStringOption:
 	bl String_copy
 	mov r1, r0
 	ldr r2, =char_nL
-	@ldrb r2, [r2]			@original string and string as the newline character
 	bl String_concat		@branch link to string concat
 	mov r5, r0
 	mov r0, r1
