@@ -20,7 +20,7 @@ InvalidInP2:		.asciz	"Invalid input\n"
 endProgram:		.asciz 	"Program ended. Thank you for using our program!\n"
 emptyList:		.asciz 	"List is empty!\n"
 endl:			.asciz	"\n"
-inputBuffer:		.word 	SIZE
+inputBuffer:		.skip 	SIZE
 
 	.text
 	.global _start
