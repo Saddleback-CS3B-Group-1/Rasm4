@@ -8,6 +8,8 @@ head_ptr:		.word 0
 char_nL:		.byte 10
 tail_ptr:		.word 0
 index:		.word 0
+ptrsubStr:	.word 0
+ptrStr:		.word 0
 outFile: 		.asciz 	"output.txt"
 rasmTitle:		.asciz	"\nRASM4 TEXT EDITOR\n"
 memoryComp:	.asciz	"Data Structure Memory Consumption: "
@@ -80,8 +82,8 @@ _start:
 	cmp	R0,#'4'		
 	beq	editStringOption
 	
-	@cmp	R0,#'5'		
-	@beq	searchStringOption
+	cmp	R0,#'5'		
+	beq	searchStringOption
 	
 	@cmp	R0,#'6'		
 	@beq	saveFileOption
@@ -244,10 +246,121 @@ fileStringsOption:
 	b _start				@branch back to start function
 ****/
 
+searchStringOption:
+	
+	ldr r1, =head_ptr
+	ldr r1, [r1]
+	cmp r0, #0
+	beq listEmpty
+	
+	mov r0, #1
+	ldr r1, =enterStringP
+	bl putstring
+	ldr r1, =inputBuffer
+	mov r2, #SIZE
+	bl getstring
+	
+	ldr r1, =inputBuffer
+	bl String_copy
+	mov r3, r0 		@make copy of desired string input and put in r3
+	
+	mov r4, #0		@initialize index counter to 0
+	
+	@ldr r5, =head_ptr 	@start from beginning of list
+	@ldr r5, [r5]		@load in that string from its address
+	
+getStringsLoop:
+	ldr r1, =head_ptr
+	mov r2, r4 		@move the index of node into r2 before calling data at function
+	bl data_at
+	mov r5, r0 		@mov string from node address into r5
+	
+	ldr r0, [r5] 		@load that string value from the node
+	
+	mov r6, r0		@move that string address into r6 to save 
+	
+	@Handling case sensitivity
+	
+	mov r1, r6 		@move the string address into r1 to call lowercase function
+	
+	bl 	String_toLowerCase	@make the string from node lowercase
+	
+	ldr r1, =ptrStr		@load the lowercase string from node into the pointer variable 
+	
+	str r0, [r1]			@store returned lowercase string from node
+	
+	mov r1, r3		@move the desired string into r1 before we call string lowercase
+	
+	bl String_toLowerCase @make the desired string lowercase
+	
+	ldr r1, =ptrsubStr	@load the lowercase desired string into pointer
+	
+	str r0, [r1] 		
+
+@store returned lowercase of desired string
+	
+	@dereference pointers
+	
+	ldr r0, =ptrStr
+	ldr r0, [r0]
+	
+	
+	ldr r1, =ptrsubStr
+	ldr r1, [r1]
+	
+	
+	mov r8, r1
+	mov r9, #1		@initialize boolean result to true
+	
+checkLoop:
+	
+	ldrb r10,[r0],#1	@load byte from string from node
+	ldrb r11,[r1],#1	@load byte from desired string
+	
+	cmp r10, #0xa		@ Check for newline
+	
+	beq endCheckLoop	@if we reached the end of substring
+	
+	cmp r11, r10		@compare characters from the strings
+	
+	movne r1, r8		@reset substring if not equal
+	
+	cmp r11, #0			@check if we reached the end of desired string, which is the null 
+	
+	bne checkLoop		@if we haven't reached the end of the string, keep looping through and compare
+	
+	mov r9, #0			@if no strings equal to desired string was found, set our boolean result to 0 which is false
+	
+endCheckLoop:
+
+	mov r0, r9
+	
+	cmp	R0,#0			@ Check if result
+	
+	beq continueSearch 	@branch to continueSearch to increment index and keep looking for desired string
+	
+	mov r1, r4		@move current index into r1 to prepare for output
+	
+	bl ascint32
+	
+	ldr r1, =endl
+	bl putstring
+	
+	ldr r1, =ptrStr		@load string from node
+	ldr r1, [r1] 		@dereference pointer
+	bl putstring		@output the string
+
+	
+continueSearch:
+	cmp r5, #0		@check if node is null
+	add r4, #1 		@increment index counter to the next node
+	bne getStringsLoop @if node does not equal null, continue to search through list
+	
+	b _start 
+
 endProgramOption:
 	ldr r1, =endProgram
 	bl putstring
 	mov r7, #1
 	svc 0
 	.end
-
