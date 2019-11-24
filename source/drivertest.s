@@ -71,10 +71,10 @@ _start:
 	cmp r0, #'A'
 	beq	addStringOption
 
-	@cmp r0, #'b'
-	@beq fileStringsOption
-	@cmp r0, #'B'
-	@beq fileStringsOption
+	cmp r0, #'b'
+	beq fileStringsOption
+	cmp r0, #'B'
+	beq fileStringsOption
 
 	@cmp	R0,#'3'		
 	@beq	removeStringOption
@@ -234,17 +234,16 @@ addTail:
 	bl link_tail
 	b _start				@branch back to start function
 
-/****
 fileStringsOption:
 	ldr r1, =head_ptr
-	ldr r2, =tail_ptr			@Parameters r1 and r2 are passed into readFileFunc
-	bl readFileFunc		@***Have to construct this function to add to list.s, function will return byteCount into r0
+	bl load_file
+	ldr r4, =head_ptr
+	str r1, [r4]
 	ldr r1, =byteCount		@Load byteCount variable
-	ldr r3, [r1]				@load byteCount value
-	add r3, r0				@sum the total byte count
-	str r3, [r1]				@store the new byte count, which will increment bytes displayed on screen
+	ldr r3, [r1]			@load byteCount value
+	add r3, r0			@sum the total byte count
+	str r3, [r1]			@store the new byte count, which will increment bytes displayed on screen
 	b _start				@branch back to start function
-****/
 
 searchStringOption:
 	
