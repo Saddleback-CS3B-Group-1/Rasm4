@@ -16,7 +16,7 @@ memoryComp:	.asciz	"Data Structure Memory Consumption: "
 bytes:			.asciz	" bytes\n"
 numNodesP:		.asciz	"Number of Nodes: "
 enterStringP:		.asciz	"Enter string: "
-enterIndexPrompt:	.asciz	"Enter index: "
+enterIndexPrompt:	.asciz	"Enter line number: "
 InvalidInP:			.asciz	"Invalid index, not in range\n"
 InvalidInP2:		.asciz	"Invalid input\n"
 endProgram:		.asciz 	"Program ended. Thank you for using our program!\n"
@@ -105,12 +105,13 @@ editStringOption:
 	bl getstring
 	ldr r1, =inputBuffer
 	bl ascint32
+	sub r0, #1
 	@bcs invalidInput
 	@bvs invalidRange
 	ldr r1, =index
 	
 	str r0, [r1]
-	cmp r1, #0
+	cmp r0, #0
 	blt invalidRange
 	ldr r1, =head_ptr 	@load head_ptr into r1
 	mov r2, r0  		@index of node
@@ -366,6 +367,8 @@ continueSearch:
 endProgramOption:
 	ldr r1, =endProgram
 	bl putstring
+	ldr r1, =head_ptr
+	bl clear_list
 	mov r7, #1
 	svc 0
 	.end
