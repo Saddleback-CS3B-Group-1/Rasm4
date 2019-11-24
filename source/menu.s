@@ -28,6 +28,7 @@ input_buffer:	.skip 	1025
    	  byte_count: .word 0
 	  node_count: .word 0
          char_nL: .byte 10
+	   stringEnd: .asciz "\n"
 				.text
 
 menu:

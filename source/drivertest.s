@@ -22,6 +22,10 @@ InvalidInP2:		.asciz	"Invalid input\n"
 endProgram:		.asciz 	"Program ended. Thank you for using our program!\n"
 emptyList:		.asciz 	"List is empty!\n"
 endl:			.asciz	"\n"
+idle_prompt:    .asciz  "\n...enter to continue..."
+fileWritePrompt:.asciz  "FILE READ from \"input.txt\""
+fileSavePrompt:.asciz  "FILE SAVED to \"output.txt\""
+fileOut:        .asciz  "output.txt"
 inputBuffer:		.skip 	SIZE
 
 	.text
@@ -31,6 +35,14 @@ inputBuffer:		.skip 	SIZE
 	.extern free
 
 _start:
+
+    mov r0, #100
+	ldr r1, =endl
+cls_loop:
+	bl putstring
+	sub r0, #1
+	cmp r0, #0
+	bgt cls_loop
 
 	mov r0, #1
 	ldr r1, =rasmTitle		@Output title 
@@ -85,8 +97,8 @@ _start:
 	cmp	R0,#'5'		
 	beq	searchStringOption
 	
-	@cmp	R0,#'6'		
-	@beq	saveFileOption
+	cmp	R0,#'6'		
+	beq	saveFileOption
 	
 	cmp	R0,#'7'	
 	beq	endProgramOption
@@ -173,11 +185,27 @@ printListOption:
 	beq listEmpty
 	ldr r1, =head_ptr
 	bl print_list
+	ldr r1, =idle_prompt
+	bl putstring
+	ldr r1, =inputBuffer
+	bl getstring
 	b _start
 	
 listEmpty:
+
+	mov r0, #100
+	ldr r1, =endl
+cls4_loop:
+	bl putstring
+	sub r0, #1
+	cmp r0, #0
+	bgt cls4_loop
 	ldr r1, =emptyList
 	bl putstring
+	ldr r1, =idle_prompt
+	bl putstring
+	ldr r1, =inputBuffer
+	bl getstring
 	b _start
 
 addStringOption:
@@ -250,6 +278,20 @@ fileStringsOption:
 	ldr r0, [r1]
 	add r0, r6
 	str r0, [r1]
+    
+	mov r0, #100
+	ldr r1, =endl
+cls2_loop:
+	bl putstring
+	sub r0, #1
+	cmp r0, #0
+	bgt cls2_loop
+	ldr r1, =fileWritePrompt
+	bl putstring
+	ldr r1, =idle_prompt
+	bl putstring
+	ldr r1, =inputBuffer
+	bl getstring
 	b _start				@branch back to start function
 
 searchStringOption:
@@ -363,6 +405,31 @@ continueSearch:
 	bne getStringsLoop @if node does not equal null, continue to search through list
 	
 	b _start 
+
+saveFileOption:
+	ldr r0, =fileOut
+	mov r1, #0101
+	ldr r2, =0666
+	mov r7, #5
+	svc 0
+	mov r2, r0
+	ldr r1, =head_ptr
+	bl write_list
+	
+	mov r0, #100
+	ldr r1, =endl
+cls3_loop:
+	bl putstring
+	sub r0, #1
+	cmp r0, #0
+	bgt cls3_loop
+	ldr r1, =fileSavePrompt
+	bl putstring
+	ldr r1, =idle_prompt
+	bl putstring
+	ldr r1, =inputBuffer
+	bl getstring
+	b _start
 
 endProgramOption:
 	ldr r1, =endProgram
