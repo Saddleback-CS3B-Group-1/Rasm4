@@ -237,12 +237,13 @@ addTail:
 fileStringsOption:
 	ldr r1, =head_ptr
 	bl load_file
+	mov r5, r0
 	ldr r4, =head_ptr
 	str r1, [r4]
 	ldr r1, =byteCount		@Load byteCount variable
-	ldr r3, [r1]			@load byteCount value
-	add r3, r0			@sum the total byte count
-	str r3, [r1]			@store the new byte count, which will increment bytes displayed on screen
+	ldr r0, [r1]
+	add r0, r5			@sum the total byte count
+	str r0, [r1]			@store the new byte count, which will increment bytes displayed on screen
 	b _start				@branch back to start function
 
 searchStringOption:

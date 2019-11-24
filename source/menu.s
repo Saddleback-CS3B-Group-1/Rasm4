@@ -121,6 +121,7 @@ load_file:
 		ldr r1, =file_handle
 		str r0, [r1]  @preserve the file handle
 		mov r11, #1   @set r11 to 1, for control flag of buffer loop
+		mov r10, #0
 buffer_loop:
 		ldr r0, =file_handle
 		ldr r0, [r0]
@@ -174,8 +175,8 @@ inner_loop:
 		mov r8, r0          @preserve our new string
 		mov r1, r0
 		bl String_length
-		add r9, r0
-		add r9, #1          @update our byte count (stringLength + 1)
+		add r10, r0
+		add r10, #9          @update our byte count (stringLength + 1)
 		bl build_node
 		mov r2, r8
 		mov r1, r0
@@ -242,7 +243,7 @@ done:
 		ldr r0, [r0]
 		mov r7, #6
 		svc 0
-		mov r0 ,r9
+		mov r0 ,r10
 		ldr r1, =head_ptr
 		ldr r1, [r1]
 		pop {r4-r8,r10,r11,lr}
