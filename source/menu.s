@@ -26,6 +26,7 @@ input_buffer:	.skip 	1025
         head_ptr: .word 0
    remainder_ptr: .word 0
    	  byte_count: .word 0
+	  node_count: .word 0
          char_nL: .byte 10
 				.text
 
@@ -122,6 +123,7 @@ load_file:
 		str r0, [r1]  @preserve the file handle
 		mov r11, #1   @set r11 to 1, for control flag of buffer loop
 		mov r10, #0
+		mov r9, #0
 buffer_loop:
 		ldr r0, =file_handle
 		ldr r0, [r0]
@@ -177,6 +179,10 @@ inner_loop:
 		bl String_length
 		add r10, r0
 		add r10, #9          @update our byte count (stringLength + 1)
+		ldr r9, =node_count
+		ldr r12, [r9]
+		add r12, #1
+		str r12, [r9]
 		bl build_node
 		mov r2, r8
 		mov r1, r0
@@ -243,7 +249,9 @@ done:
 		ldr r0, [r0]
 		mov r7, #6
 		svc 0
-		mov r0 ,r10
+		mov r0, r10
+		ldr r2, =node_count
+		ldr r2, [r2]
 		ldr r1, =head_ptr
 		ldr r1, [r1]
 		pop {r4-r8,r10,r11,lr}

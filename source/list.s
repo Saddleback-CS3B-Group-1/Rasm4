@@ -10,6 +10,12 @@
 		.global clear_list
 		.extern malloc
 		.extern free
+		.data
+		char_lP: .byte 40 
+		char_rP: .byte 41
+		char_wS: .byte 32
+		num_out: .skip 4
+		.text
 @--- Generates a new 8 byte node ---@ @INPUT: nan
 build_node:
 		push {r4-r8,r10,r11,lr}
@@ -101,9 +107,21 @@ print_list:
 		mov r8, r1
 		push {r4-r8,r10,r11,lr}
 		ldr r4, [r1]
+		mov r7, #1
 print_loop:
 		cmp r4, #0
 		beq print_end
+		ldr r1, =char_lP
+		bl putch
+		mov r0, r7
+		ldr r1, =num_out
+		bl intasc32
+		bl putstring
+		add r7, #1
+		ldr r1, =char_rP
+		bl putch
+		ldr r1, =char_wS
+		bl putch
 		ldr r1, [r4], #4
 		bl putstring
 		ldr r4, [r4]
