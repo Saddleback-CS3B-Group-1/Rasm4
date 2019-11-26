@@ -48,6 +48,7 @@ tail_end:
 @--- Inserts a data-address into a given node ---@ @INPUT: R1=Address of the node, R2=Address of the data
 fill_node:
 		push {r4-r8,r10,r11,lr}
+		ldr r4, [r1]
 		str r2, [r1]
 		pop {r4-r8,r10,r11,lr}
 		bx lr
