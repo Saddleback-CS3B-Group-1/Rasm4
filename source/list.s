@@ -5,6 +5,7 @@
 		.global data_at
 		.global edit_node
 		.global print_list
+		.global search_list
 		.global write_list
 		.global remove_node
 		.global clear_list
@@ -131,6 +132,45 @@ print_end:
 		mov r1, r8
 		bx lr
 @-----------------------------@
+
+@--- Print matching strings ---@
+search_list:
+		mov r8, r1
+		mov r10, r2
+		push {r4-r8,r10,r11,lr}
+		ldr r4, [r1]
+		mov r7, #1
+search_loop:
+		cmp r4, #0
+		beq search_end
+		ldr r1, [r4]
+		mov r2, r10
+		bl String_indexOf_3
+		cmp r0, #0
+		blt search_bypass_print
+		ldr r1, =char_lP
+		bl putch
+		mov r0, r7
+		ldr r1, =num_out
+		bl intasc32
+		bl putstring
+		ldr r1, =char_rP
+		bl putch
+		ldr r1, =char_wS
+		bl putch
+		ldr r1, [r4]
+		bl putstring
+search_bypass_print:
+		add r7, #1
+		add r4, #4
+		ldr r4, [r4]
+		b search_loop
+search_end:
+		pop {r4-r8,r10,r11,lr}
+		mov r1, r8
+		bx lr
+
+@------------------------------@
 
 @--- Write the list to a file ---@ @INPUT:R1=Address of head node, R2=file handle for output
 write_list:

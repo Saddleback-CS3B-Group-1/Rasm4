@@ -63,6 +63,7 @@ menu:
 	ldr	R1,=input_buffer			@ Load input buffer into R1
 	mov	R2,#SIZE			@ Load input buffer size into R2
 	bl	getstring			@ Getstring input
+	bl String_length
 	cmp	R0,#2				@ Check if user input size is valid
 	bgt	invalidInput			@ If user input is invalidInput, branch to invalidInput
 	ldr	R1, =input_buffer		@ Load input buffer into R1
@@ -85,6 +86,7 @@ menu:
 	ldr	R1,=input_buffer			@ Load input buffer into R1
 	mov	R2,#SIZE			@ Load input buffer size into R2
 	bl	getstring			@ Getstring input
+	bl String_length
 	cmp	R0,#2				@ Check if user input size is valid
 	bgt	invalidInput			@ If user input is not valid branch to invalidInput
 	ldr	R1,=input_buffer			@ Load input buffer into R1
@@ -102,6 +104,7 @@ invalidInput:
 	mov	R0,#1				@ Set output to stdout
 	ldr	R1, =invalidMsg			@ Load invalid input message into R1
 	bl	putstring			@ Output invalid input message
+	pop {r4-r8,r10,r11,lr}
 	b	menu				@ Branch to menu
 
 endMenu:
