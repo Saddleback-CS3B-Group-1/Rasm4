@@ -120,6 +120,16 @@ editStringOption:
 	cmp r1, #0
 	beq listEmpty
 /*
+	Clear the screen so that the menu can be printed.
+*/
+    mov r0, #100
+	ldr r1, =endl
+cls10_loop:
+	bl putstring
+	sub r0, #1
+	cmp r0, #0
+	bgt cls10_loop
+/*
 	Prompt the user for which line to edit.
 	User enters in a line number which is 
 	then subtracted by 1 to be used as the
