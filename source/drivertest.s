@@ -361,24 +361,24 @@ addTail:
 	bl link_tail
 	b _start				@branch back to start function
 
-@fileStringsOption:
-@	ldr r1, =head_ptr
-@	bl load_file
-@	mov r5, r0
-@	mov r6, r2
-@	ldr r4, =head_ptr
-@	str r1, [r4]
-@	ldr r1, =byteCount		@Load byteCount variable
-@	ldr r0, [r1]
-@	add r0, r5			@sum the total byte count
-@	str r0, [r1]			@store the new byte count, which will increment bytes displayed on screen
-@	ldr r1, =nodeCount
-@	ldr r0, [r1]
-@	add r0, r6
-@	str r0, [r1]
+fileStringsOption:
+	ldr r1, =head_ptr
+	bl load_file
+	mov r5, r0
+	mov r6, r2
+	ldr r4, =head_ptr
+	str r1, [r4]
+	ldr r1, =byteCount		@Load byteCount variable
+	ldr r0, [r1]
+	add r0, r5			@sum the total byte count
+	str r0, [r1]			@store the new byte count, which will increment bytes displayed on screen
+	ldr r1, =nodeCount
+	ldr r0, [r1]
+	add r0, r6
+	str r0, [r1]
     
-@	mov r0, #100
-@	ldr r1, =endl
+	mov r0, #100
+	ldr r1, =endl
 
 cls2_loop:
 
