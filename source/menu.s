@@ -24,6 +24,7 @@ input_buffer:	.skip 	1025
         filename: .asciz "input.txt"
 	 file_handle: .word 0
         head_ptr: .word 0
+		tail_ptr: .word 0
    remainder_ptr: .word 0
    	  byte_count: .word 0
 	  node_count: .word 0
@@ -200,8 +201,10 @@ inner_loop:
 		mov r2, #0
 		bl link_node
 		mov r2, r1
-		ldr r1, =head_ptr
+		ldr r1, =tail_ptr
+		@ldr r1, =head_ptr
 		bl link_tail
+		str r2, [r1]
 		b inner_loop
 
 empty_head:
@@ -210,6 +213,8 @@ empty_head:
 		bl link_node
 		mov r2, r1
 		ldr r1, =head_ptr
+		str r2, [r1]
+		ldr r1, =tail_ptr
 		str r2, [r1]
 		b inner_loop
 
